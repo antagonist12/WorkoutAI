@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text } from 'react-native';
+import { styles } from '../../styles/ChatInput.Styles';
 
-export default function ChatInput({ onSend }) {
+export default function ChatInput({ onSend, disabled }) {
   const [text, setText] = useState('');
 
   const handleSend = () => {
-    if (text.trim() === '') return;
+    if (text.trim() === '' || disabled) return;
     onSend(text.trim());
     setText('');
   };
@@ -17,53 +18,19 @@ export default function ChatInput({ onSend }) {
         value={text}
         onChangeText={setText}
         placeholder="Ketik pesan..."
-        placeholderTextColor="#9CA3AF"
-        multiline
+        placeholderTextColor="#6B7280"
+        editable={!disabled}
+        onSubmitEditing={handleSend}
+        returnKeyType="send"
+        submitBehavior="submit"
       />
       <TouchableOpacity
-        style={[styles.button, text.trim() === '' && styles.buttonDisabled]}
+        style={[styles.button, (text.trim() === '' || disabled) && styles.buttonDisabled]}
         onPress={handleSend}
-        disabled={text.trim() === ''}
+        disabled={text.trim() === '' || disabled}
       >
         <Text style={styles.buttonText}>Kirim</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    padding: 12,
-    borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
-    backgroundColor: '#FFFFFF',
-    alignItems: 'flex-end',
-  },
-  input: {
-    flex: 1,
-    minHeight: 44,
-    maxHeight: 120,
-    backgroundColor: '#F3F4F6',
-    borderRadius: 22,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    fontSize: 15,
-    color: '#111827',
-    marginRight: 8,
-  },
-  button: {
-    backgroundColor: '#4F46E5',
-    borderRadius: 22,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-  },
-  buttonDisabled: {
-    backgroundColor: '#C4B5FD',
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-    fontSize: 15,
-  },
-});

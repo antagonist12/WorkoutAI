@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import ChatList from '../components/chat/ChatList';
 import ChatInput from '../components/chat/ChatInput';
+import { sendMessage } from '../services/geminiService';
+import { styles } from '../styles/AIChatScreen.Styles';
 
 export default function AiChatScreen() {
   const [messages, setMessages] = useState([
@@ -11,22 +13,38 @@ export default function AiChatScreen() {
       isUser: false,
     },
   ]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSend = (text) => {
+
+  const handleSend = async (text) => {
     const userMessage = {
       id: Date.now().toString(),
       text,
       isUser: true,
     };
 
-    // hardcode AI response dulu, nanti diganti Gemini API
-    const aiMessage = {
-      id: (Date.now() + 1).toString(),
-      text: 'Oke, saya catat! Ceritakan lebih lanjut tentang tujuan fitness kamu.',
-      isUser: false,
-    };
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    setIsLoading(true);
 
-    setMessages((prev) => [...prev, userMessage, aiMessage]);
+    try {
+      const aiResponse = await sendMessage(updatedMessages);
+      const aiMessage = {
+        id: (Date.now() + 1).toString(),
+        text: aiResponse,
+        isUser: false,
+      };
+      setMessages((prev) => [...prev, aiMessage]);
+    } catch (error) {
+      const errorMessage = {
+        id: (Date.now() + 1).toString(),
+        text: 'Maaf, terjadi kesalahan. Coba lagi ya!',
+        isUser: false,
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -35,15 +53,8 @@ export default function AiChatScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={90}
     >
-      <ChatList messages={messages} />
-      <ChatInput onSend={handleSend} />
+      <ChatList messages={messages} isLoading={isLoading} />
+      <ChatInput onSend={handleSend} disabled={isLoading} />
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-});
