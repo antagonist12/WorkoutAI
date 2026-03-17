@@ -1,13 +1,15 @@
 import { StyleSheet } from 'react-native';
 import { fonts } from '../config/Typography';
 
-
 export const styles = StyleSheet.create({
+  // ── Layout ──────────────────────────────────────────────
   container: {
     flex: 1,
     backgroundColor: '#0F0F0F',
     paddingHorizontal: 20,
   },
+
+  // ── Header ──────────────────────────────────────────────
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -17,16 +19,17 @@ export const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 26,
-    fontWeight: '800',
     fontFamily: fonts.extraBold,
     color: '#FFFFFF',
   },
   subGreeting: {
     fontSize: 14,
-    color: '#9CA3AF',
     fontFamily: fonts.regular,
+    color: '#9CA3AF',
     marginTop: 2,
   },
+
+  // ── Streak Badge ─────────────────────────────────────────
   streakBadge: {
     backgroundColor: '#1F1F1F',
     borderRadius: 16,
@@ -41,7 +44,6 @@ export const styles = StyleSheet.create({
   },
   streakCount: {
     fontSize: 20,
-    fontWeight: '800',
     fontFamily: fonts.extraBold,
     color: '#FF6B35',
   },
@@ -50,6 +52,36 @@ export const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     color: '#9CA3AF',
   },
+
+  // ── Plan Info Card ────────────────────────────────────────
+  planInfoCard: {
+    backgroundColor: '#1A1A2E',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#7C3AED',
+  },
+  planInfoLabel: {
+    fontSize: 11,
+    fontFamily: fonts.bold,
+    color: '#7C3AED',
+    letterSpacing: 1.5,
+    marginBottom: 4,
+  },
+  planInfoName: {
+    fontSize: 16,
+    fontFamily: fonts.bold,
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  planInfoGoal: {
+    fontSize: 13,
+    fontFamily: fonts.regular,
+    color: '#9CA3AF',
+  },
+
+  // ── Workout Card ─────────────────────────────────────────
   workoutCard: {
     backgroundColor: '#1A1A2E',
     borderRadius: 24,
@@ -66,7 +98,6 @@ export const styles = StyleSheet.create({
   },
   workoutCardLabel: {
     fontSize: 11,
-    fontWeight: '700',
     fontFamily: fonts.bold,
     color: '#FF6B35',
     letterSpacing: 1.5,
@@ -79,13 +110,11 @@ export const styles = StyleSheet.create({
   },
   durationText: {
     fontSize: 12,
-    color: '#FF6B35',
-    fontWeight: '600',
     fontFamily: fonts.semiBold,
+    color: '#FF6B35',
   },
   workoutTitle: {
     fontSize: 22,
-    fontWeight: '800',
     fontFamily: fonts.extraBold,
     color: '#FFFFFF',
     marginBottom: 4,
@@ -96,73 +125,74 @@ export const styles = StyleSheet.create({
     color: '#9CA3AF',
     marginBottom: 16,
   },
-  progressContainer: {
-    marginBottom: 16,
-  },
-  progressInfo: {
+
+  // ── Exercise List ─────────────────────────────────────────
+  exerciseItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#0F0F0F',
+    borderRadius: 12,
+    padding: 12,
     marginBottom: 8,
   },
-  progressText: {
+  exerciseNumber: {
+    fontSize: 16,
+    fontFamily: fonts.bold,
+    color: '#FF6B35',
+    width: 28,
+  },
+  exerciseInfo: { flex: 1 },
+  exerciseName: {
+    fontSize: 14,
+    fontFamily: fonts.semiBold,
+    color: '#FFFFFF',
+    marginBottom: 2,
+  },
+  exerciseDetail: {
     fontSize: 12,
     fontFamily: fonts.regular,
     color: '#9CA3AF',
   },
-  progressBarBg: {
-    height: 8,
-    backgroundColor: '#2D2D2D',
-    borderRadius: 4,
-  },
-  progressBarFill: {
-    height: 8,
-    backgroundColor: '#FF6B35',
-    borderRadius: 4,
-  },
+
+  // ── Start Button ──────────────────────────────────────────
   startButton: {
     backgroundColor: '#FF6B35',
     borderRadius: 14,
     paddingVertical: 14,
     alignItems: 'center',
+    marginTop: 12,
   },
   startButtonText: {
     color: '#FFFFFF',
-    fontWeight: '800',
     fontFamily: fonts.extraBold,
     fontSize: 16,
   },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
-    gap: 12,
-  },
-  statCard: {
-    flex: 1,
+
+  // ── Empty Card ────────────────────────────────────────────
+  emptyCard: {
     backgroundColor: '#1F1F1F',
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: 24,
+    padding: 32,
+    marginBottom: 20,
     alignItems: 'center',
   },
-  statEmoji: {
-    fontSize: 24,
-    marginBottom: 6,
-  },
-  statValue: {
-    fontSize: 20,
-    fontWeight: '800',
-    fontFamily: fonts.extraBold,
+  emptyEmoji: { fontSize: 48, marginBottom: 12 },
+  emptyTitle: {
+    fontSize: 18,
+    fontFamily: fonts.bold,
     color: '#FFFFFF',
+    marginBottom: 8,
   },
-  statLabel: {
-    fontSize: 11,
+  emptySubtitle: {
+    fontSize: 14,
     fontFamily: fonts.regular,
     color: '#9CA3AF',
-    marginTop: 2,
+    textAlign: 'center',
+    lineHeight: 22,
   },
+  // ── Quick Actions ─────────────────────────────────────────
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '800',
     fontFamily: fonts.extraBold,
     color: '#FFFFFF',
     marginBottom: 12,
@@ -184,7 +214,6 @@ export const styles = StyleSheet.create({
   },
   quickActionText: {
     fontSize: 13,
-    fontWeight: '700',
     fontFamily: fonts.bold,
     color: '#FFFFFF',
     textAlign: 'center',

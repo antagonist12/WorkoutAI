@@ -1,8 +1,8 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, Keyboard } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
-import AiChatScreen from '../screens/AIChatScreen';
+import AiChatScreen, { resetChatRef } from '../screens/AIChatScreen';
 import { styles } from '../styles/BottomTabNavigator.Styles';
 
 const Tab = createBottomTabNavigator();
@@ -19,6 +19,17 @@ function TabIcon({ emoji, label, focused }) {
 }
 
 export default function BottomTabNavigator() {
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showSub = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hideSub = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -31,7 +42,7 @@ export default function BottomTabNavigator() {
         },
         headerTintColor: '#FFFFFF',
         headerTitleStyle: { fontWeight: '800', fontSize: 20 },
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: isKeyboardVisible ? { display: 'none' } : styles.tabBar,
         tabBarShowLabel: false,
         tabBarItemStyle: styles.tabBarItem,
       }}
@@ -50,6 +61,15 @@ export default function BottomTabNavigator() {
         component={AiChatScreen}
         options={{
           headerTitle: '🤖 AI Coach',
+          tabBarHideOnKeyboard: true,
+          headerRight: () => (
+            <TouchableOpacity
+              style={styles.resetButton}
+              onPress={() => { resetChatRef.current?.(); }}
+            >
+              <Text style={styles.resetText}>Reset</Text>
+            </TouchableOpacity>
+          ),
           tabBarIcon: ({ focused }) => (
             <TabIcon emoji="🤖" label="AI Chat" focused={focused} />
           ),

@@ -18,7 +18,11 @@ export default function ChatList({ messages, isLoading }) {
       data={messages}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
-        <ChatBubble message={item.text} isUser={item.isUser} />
+        <ChatBubble
+          message={item.text}
+          isUser={item.isUser}
+          isWorkoutPlan={item.isWorkoutPlan}
+        />
       )}
       contentContainerStyle={styles.content}
       onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}

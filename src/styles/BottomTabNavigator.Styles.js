@@ -42,4 +42,12 @@ export const styles = StyleSheet.create({
   tabLabelFocused: {
     color: '#FF6B35',
   },
+  resetButton: {
+    marginRight: 16
+  },
+  resetText: {
+    color: '#FF6B35',
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 14
+  }
 });

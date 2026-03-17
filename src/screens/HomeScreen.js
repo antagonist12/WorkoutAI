@@ -1,25 +1,32 @@
-import React from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { styles } from '../styles/HomeScreen.Styles'
+import { loadWorkoutPlan } from '../storage/chatStorage';
 
 export default function HomeScreen() {
-  const userName = 'Aditya';
+  const [workoutPlan, setWorkoutPlan] = useState(null);
   const streak = 5;
-  const todayWorkout = {
-    title: 'Upper Body Strength',
-    duration: '45 min',
-    exercises: 6,
-    completed: 2,
-  };
 
-  const progress = todayWorkout.completed / todayWorkout.exercises;
+  useFocusEffect(
+    useCallback(() => {
+      const loadPlan = async () => {
+        const plan = await loadWorkoutPlan();
+        setWorkoutPlan(plan);
+      };
+      loadPlan();
+    }, [])
+  );
 
+  const userName = 'Aditya';
+  const todayName = new Date().toLocaleDateString('id-ID', { weekday: 'long' });
+  const todayWorkout = workoutPlan?.days?.find(d => d.day.toLowerCase() === todayName.toLowerCase());
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.greeting}>Halo, {userName} 👋</Text>
+          <Text style={styles.greeting}>Halo, {userName}! 👋</Text>
           <Text style={styles.subGreeting}>Siap workout hari ini?</Text>
         </View>
         <View style={styles.streakBadge}>
@@ -29,55 +36,61 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      <View style={styles.workoutCard}>
-        <View style={styles.workoutCardHeader}>
-          <Text style={styles.workoutCardLabel}>WORKOUT HARI INI</Text>
-          <View style={styles.durationBadge}>
-            <Text style={styles.durationText}>⏱ {todayWorkout.duration}</Text>
-          </View>
+      {workoutPlan && (
+        <View style={styles.planInfoCard}>
+          <Text style={styles.planInfoLabel}>PROGRAM AKTIF</Text>
+          <Text style={styles.planInfoName}>{workoutPlan.name}</Text>
+          <Text style={styles.planInfoGoal}>🎯 {workoutPlan.goal}</Text>
         </View>
+      )}
 
-        <Text style={styles.workoutTitle}>{todayWorkout.title}</Text>
-        <Text style={styles.workoutExercises}>
-          {todayWorkout.exercises} latihan
-        </Text>
-
-        <View style={styles.progressContainer}>
-          <View style={styles.progressInfo}>
-            <Text style={styles.progressText}>Progress</Text>
-            <Text style={styles.progressText}>
-              {todayWorkout.completed}/{todayWorkout.exercises}
-            </Text>
+      {todayWorkout ? (
+        <View style={styles.workoutCard}>
+          <View style={styles.workoutCardHeader}>
+            <Text style={styles.workoutCardLabel}>WORKOUT HARI INI</Text>
+            <View style={styles.durationBadge}>
+              <Text style={styles.durationText}>⏱ {todayWorkout.duration}</Text>
+            </View>
           </View>
-          <View style={styles.progressBarBg}>
-            <View style={[styles.progressBarFill, { width: `${progress * 100}%` }]} />
-          </View>
-        </View>
-
-        <TouchableOpacity style={styles.startButton}>
-          <Text style={styles.startButtonText}>
-            {todayWorkout.completed > 0 ? 'Lanjutkan →' : 'Mulai Workout →'}
+          <Text style={styles.workoutTitle}>{todayWorkout.title}</Text>
+          <Text style={styles.workoutExercises}>
+            {todayWorkout.exercises.length} latihan
           </Text>
-        </TouchableOpacity>
-      </View>
 
-      <View style={styles.statsRow}>
-        <View style={styles.statCard}>
-          <Text style={styles.statEmoji}>💪</Text>
-          <Text style={styles.statValue}>12</Text>
-          <Text style={styles.statLabel}>Total Sesi</Text>
+          {/* Exercise List */}
+          {todayWorkout.exercises.map((exercise, index) => (
+            <View key={index} style={styles.exerciseItem}>
+              <Text style={styles.exerciseNumber}>{index + 1}</Text>
+              <View style={styles.exerciseInfo}>
+                <Text style={styles.exerciseName}>{exercise.name}</Text>
+                <Text style={styles.exerciseDetail}>
+                  {exercise.sets} set × {exercise.reps} • rest {exercise.rest}
+                </Text>
+              </View>
+            </View>
+          ))}
+
+          <TouchableOpacity style={styles.startButton}>
+            <Text style={styles.startButtonText}>Mulai Workout →</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statEmoji}>⚡</Text>
-          <Text style={styles.statValue}>3.2k</Text>
-          <Text style={styles.statLabel}>Kalori</Text>
+      ) : (
+        <View style={styles.emptyCard}>
+          {workoutPlan ? (
+            <>
+              <Text style={styles.emptyEmoji}>😴</Text>
+              <Text style={styles.emptyTitle}>Hari Istirahat</Text>
+              <Text style={styles.emptySubtitle}>Tidak ada workout hari ini. Nikmati istirahatmu!</Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.emptyEmoji}>🤖</Text>
+              <Text style={styles.emptyTitle}>Belum ada program</Text>
+              <Text style={styles.emptySubtitle}>Chat dengan AI Coach untuk membuat program workout personalmu!</Text>
+            </>
+          )}
         </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statEmoji}>🏆</Text>
-          <Text style={styles.statValue}>5</Text>
-          <Text style={styles.statLabel}>Badge</Text>
-        </View>
-      </View>
+      )}
 
       <Text style={styles.sectionTitle}>Quick Action</Text>
       <View style={styles.quickActions}>
