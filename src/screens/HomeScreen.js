@@ -77,7 +77,7 @@ export default function HomeScreen() {
           <Text style={styles.quickActionEmoji}>🤖</Text>
           <Text style={styles.quickActionText}>Chat AI Coach</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.quickActionCard, { backgroundColor: '#7C3AED' }]}>
+        <TouchableOpacity style={[styles.quickActionCard, { backgroundColor: '#7C3AED' }]} onPress={() => navigation.navigate('Program')}>
           <Text style={styles.quickActionEmoji}>📋</Text>
           <Text style={styles.quickActionText}>Lihat Program</Text>
         </TouchableOpacity>
