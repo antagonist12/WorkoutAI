@@ -1,26 +1,29 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { styles } from '../styles/HomeScreen.Styles'
+import { useWorkout } from '../context/WorkoutContext';
 import { loadWorkoutPlan } from '../storage/chatStorage';
+import WorkoutCard from '../components/home/WorkoutCard';
 
 export default function HomeScreen() {
-  const [workoutPlan, setWorkoutPlan] = useState(null);
+  const navigation = useNavigation();
+  const { workoutPlan, setWorkoutPlan } = useWorkout();
   const streak = 5;
-
-  useFocusEffect(
-    useCallback(() => {
-      const loadPlan = async () => {
-        const plan = await loadWorkoutPlan();
-        setWorkoutPlan(plan);
-      };
-      loadPlan();
-    }, [])
-  );
 
   const userName = 'Aditya';
   const todayName = new Date().toLocaleDateString('id-ID', { weekday: 'long' });
   const todayWorkout = workoutPlan?.days?.find(d => d.day.toLowerCase() === todayName.toLowerCase());
+
+  useEffect(() => {
+    const loadPlan = async () => {
+      const savedPlan = await loadWorkoutPlan();
+      if (savedPlan) {
+        setWorkoutPlan(savedPlan);
+      }
+    };
+    loadPlan();
+  }, []);
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -45,35 +48,11 @@ export default function HomeScreen() {
       )}
 
       {todayWorkout ? (
-        <View style={styles.workoutCard}>
-          <View style={styles.workoutCardHeader}>
-            <Text style={styles.workoutCardLabel}>WORKOUT HARI INI</Text>
-            <View style={styles.durationBadge}>
-              <Text style={styles.durationText}>⏱ {todayWorkout.duration}</Text>
-            </View>
-          </View>
-          <Text style={styles.workoutTitle}>{todayWorkout.title}</Text>
-          <Text style={styles.workoutExercises}>
-            {todayWorkout.exercises.length} latihan
-          </Text>
-
-          {/* Exercise List */}
-          {todayWorkout.exercises.map((exercise, index) => (
-            <View key={index} style={styles.exerciseItem}>
-              <Text style={styles.exerciseNumber}>{index + 1}</Text>
-              <View style={styles.exerciseInfo}>
-                <Text style={styles.exerciseName}>{exercise.name}</Text>
-                <Text style={styles.exerciseDetail}>
-                  {exercise.sets} set × {exercise.reps} • rest {exercise.rest}
-                </Text>
-              </View>
-            </View>
-          ))}
-
-          <TouchableOpacity style={styles.startButton}>
-            <Text style={styles.startButtonText}>Mulai Workout →</Text>
-          </TouchableOpacity>
-        </View>
+        <WorkoutCard
+          workout={todayWorkout}
+          isToday={true}
+          onStart={() => console.log('mulai workout!')}
+        />
       ) : (
         <View style={styles.emptyCard}>
           {workoutPlan ? (
@@ -94,7 +73,7 @@ export default function HomeScreen() {
 
       <Text style={styles.sectionTitle}>Quick Action</Text>
       <View style={styles.quickActions}>
-        <TouchableOpacity style={[styles.quickActionCard, { backgroundColor: '#FF6B35' }]}>
+        <TouchableOpacity style={[styles.quickActionCard, { backgroundColor: '#FF6B35' }]} onPress={() => navigation.navigate('AI Chat')}>
           <Text style={styles.quickActionEmoji}>🤖</Text>
           <Text style={styles.quickActionText}>Chat AI Coach</Text>
         </TouchableOpacity>

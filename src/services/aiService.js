@@ -38,27 +38,6 @@ Jawab singkat dan jelas, jangan terlalu panjang.`;
 
 const PROVIDERS = [
   {
-    name: 'gemini-2.5-flash',
-    call: async (contents) => {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          contents,
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw { status: data.error?.status, message: data.error?.message };
-      return data.candidates[0].content.parts[0].text;
-    },
-    formatHistory: (chatHistory) => chatHistory.map((msg) => ({
-      role: msg.isUser ? 'user' : 'model',
-      parts: [{ text: msg.text }],
-    })),
-  },
-  {
     name: 'groq-llama',
     call: async (messages) => {
       const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -85,6 +64,27 @@ const PROVIDERS = [
         content: msg.text,
       })),
     ],
+  },
+  {
+    name: 'gemini-2.5-flash',
+    call: async (contents) => {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw { status: data.error?.status, message: data.error?.message };
+      return data.candidates[0].content.parts[0].text;
+    },
+    formatHistory: (chatHistory) => chatHistory.map((msg) => ({
+      role: msg.isUser ? 'user' : 'model',
+      parts: [{ text: msg.text }],
+    })),
   },
 ];
 

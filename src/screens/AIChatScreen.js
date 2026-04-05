@@ -5,6 +5,7 @@ import ChatInput from '../components/chat/ChatInput';
 import { sendMessage, extractWorkoutPlan } from '../services/aiService';
 import { styles } from '../styles/AIChatScreen.Styles';
 import { saveChatHistory, loadChatHistory, saveWorkoutPlan, clearChatHistory } from '../storage/chatStorage';
+import { useWorkout } from '../context/WorkoutContext';
 
 const INITIAL_MESSAGE = {
   id: '1',
@@ -15,6 +16,7 @@ const INITIAL_MESSAGE = {
 export const resetChatRef = { current: null };
 
 export default function AiChatScreen() {
+  const { setWorkoutPlan } = useWorkout();
   const [messages, setMessages] = useState([INITIAL_MESSAGE,]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,6 +42,7 @@ export default function AiChatScreen() {
       const workoutPlan = extractWorkoutPlan(aiResponse);
       if (workoutPlan) {
         await saveWorkoutPlan(workoutPlan);
+        setWorkoutPlan(workoutPlan)
         console.log('Workout plan saved:', workoutPlan);
       }
 
